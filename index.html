@@ -331,22 +331,22 @@
       </div>
 
       <div class="input-group">
-        <label for="adPersonam2Rate">Precio unitario Ad-Personam II:</label>
+        <label for="adPersonam2Rate">Ad-Personam II:</label>
         <input type="number" id="adPersonam2Rate" placeholder="Introduce precio unitario" step="0.01">
       </div>
 
       <div class="input-group">
-        <label for="voluntaryRate">Precio unitario Complemento Voluntario:</label>
+        <label for="voluntaryRate">Complemento Voluntario:</label>
         <input type="number" id="voluntaryRate" placeholder="Introduce precio unitario" step="0.01">
       </div>
 
       <div class="input-group">
-        <label for="convenioPlusRate">Precio unitario Plus Convenio:</label>
+        <label for="convenioPlusRate">Plus Convenio:</label>
         <input type="number" id="convenioPlusRate" placeholder="Introduce precio unitario">
       </div>
 
       <div class="input-group">
-        <label for="hasAdPersonamPV">&#xbf;Tiene Plus Ad-Personam PV?</label>
+        <label for="hasAdPersonamPV">Plus Ad-Personam PV </label>
         <select id="hasAdPersonamPV">
           <option value="no">No</option>
           <option value="yes">S&#xed;</option>
@@ -354,7 +354,7 @@
       </div>
 
       <div class="input-group">
-        <label for="hasCoordinationPlus">&#xbf;Tiene Plus Funcional Coordinaci&#xf3;n?</label>
+        <label for="hasCoordinationPlus">Plus Funcional Coordinaci&#xf3;n</label>
         <select id="hasCoordinationPlus">
           <option value="no">No</option>
           <option value="yes">S&#xed;</option>
@@ -609,8 +609,8 @@ function calculateSalary() {
         <p><strong>Paga Extra Verano/Invierno:</strong> ${extraPay.toFixed(2)}€</p>
         <p><strong>Complemento Voluntario:</strong> ${voluntaryPay.toFixed(2)}€</p>
         <p><strong>Salario Bruto:</strong> ${grossSalary.toFixed(2)}€</p>
-        <p><strong>Deducción IRPF (${irpfPercentage}%):</strong> ${irpfDeduction.toFixed(2)}€</p>
         <p><strong>Cuota Sindical:</strong> ${UNION_FEE.toFixed(2)}€</p>
+        <p><strong>Deducción IRPF (${irpfPercentage}%):</strong> ${irpfDeduction.toFixed(2)}€</p>
         <p class="total-to-receive"><strong>TOTAL A COBRAR:</strong> ${netSalary.toFixed(2)}€</p>
     `;
 }
@@ -681,6 +681,7 @@ function createDayElement(day, month, year) {
         <option value="T">Tarde</option>
         <option value="N">Noche</option>
         <option value="D">Descanso</option>
+        <option value="F">Festivo</option>
       </select>
     </div>
   `;
