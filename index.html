@@ -62,9 +62,15 @@
   input, select {
     width: 100%;
     padding: 0.5rem;
-    border: 1px solid #ddd;
+    border: 1px solid #ff0000;
     border-radius: 5px;
     margin-bottom: 1rem;
+    outline-color: #ff0000;
+  }
+
+  input:hover, select:hover,
+  input:focus, select:focus {
+    border-color: #cc0000;
   }
 
   button {
@@ -187,16 +193,16 @@
 
       <div class="input-group">
         <label for="adPersonam2Rate">Ad-Personam II:</label>
-        <input type="number" id="adPersonam2Rate" placeholder="Introduce precio unitario" step="0.01">
+        <input type="number" id="adPersonam2Rate" placeholder="Introduce PRECIO/UNI" step="0.01">
       </div>
 
       <div class="input-group">
         <label for="voluntaryRate">Complemento Voluntario:</label>
-        <input type="number" id="voluntaryRate" placeholder="Introduce precio unitario" step="0.01">
+        <input type="number" id="voluntaryRate" placeholder="Introduce PRECIO/UNI" step="0.01">
       </div>
 
       <div class="input-group">
-        <label for="hasAdPersonamPV">Tiene Plus Ad-Personam PV</label>
+        <label for="hasAdPersonamPV">Plus Ad-Personam PV</label>
         <select id="hasAdPersonamPV">
           <option value="no">No</option>
           <option value="yes">S&#xed;</option>
@@ -204,7 +210,7 @@
       </div>
 
       <div class="input-group">
-        <label for="hasCoordinationPlus">Tiene Plus Funcional Coordinaci&#xf3;n</label>
+        <label for="hasCoordinationPlus">Plus Funcional Coordinaci&#xf3;n</label>
         <select id="hasCoordinationPlus">
           <option value="no">No</option>
           <option value="yes">S&#xed;</option>
@@ -212,7 +218,7 @@
       </div>
 
       <div class="input-group">
-        <label for="hasDFestivo4Turno">Tiene Plus D-Festivo 4&#xba;Turno</label>
+        <label for="hasDFestivo4Turno">Plus D-Festivo 4&#xba;Turno</label>
         <select id="hasDFestivo4Turno">
           <option value="no">No</option>
           <option value="yes">S&#xed;</option>
@@ -220,7 +226,7 @@
       </div>
 
       <div class="input-group">
-        <label for="hasDisabledAid">Cobra Ayuda disminuid@s</label>
+        <label for="hasDisabledAid">Ayuda disminuido/as</label>
         <select id="hasDisabledAid">
           <option value="no">No</option>
           <option value="yes">S&#xed;</option>
@@ -278,11 +284,6 @@
       </div>
 
       <div class="input-group">
-        <label for="irpf">Porcentaje IRPF (%):</label>
-        <input type="number" id="irpf" placeholder="Introduce el porcentaje de IRPF" step="0.01">
-      </div>
-
-      <div class="input-group">
         <label for="bocadilloDays">D&#xed;as Plus bocadillo en Puesto:</label>
         <input type="number" id="bocadilloDays" placeholder="Introduce n&#xfa;mero de d&#xed;as" min="0" value="0">
       </div>
@@ -317,6 +318,11 @@
           <option value="yes">S&#xed;</option>
         </select>
         <small style="display: block; margin-top: 5px; color: #666;">* Un plus Adelanto Turno equivale a una jornada especial B</small>
+      </div>
+
+      <div class="input-group">
+        <label for="irpf">Porcentaje IRPF (%):</label>
+        <input type="number" id="irpf" placeholder="Introduce el porcentaje de IRPF" step="0.01">
       </div>
 
       <button onclick="calculateSalary()">Calcular Salario</button>
@@ -490,7 +496,7 @@ function calculateSalary() {
         <p><strong>Pre-Aviso 4ºTurno:</strong> ${preAvisoDays} días (${preAvisoPay.toFixed(2)}€)</p>
         <p><strong>Plus D-Festivo 4ºTurno:</strong> ${dFestivo4TurnoPay.toFixed(2)}€</p>
         <p><strong>Jornada Especial (${jornadaEspecialType}):</strong> ${jornadaEspecialPay.toFixed(2)}€</p>
-        <p><strong>Ayuda disminuid@s:</strong> ${disabledAidPay.toFixed(2)}€</p>
+        <p><strong>Ayuda disminuido/as:</strong> ${disabledAidPay.toFixed(2)}€</p>
         <p><strong>Plus bocadillo en Puesto:</strong> ${bocadilloPay.toFixed(2)}€</p>
         <p><strong>Paga Extra Verano/Invierno:</strong> ${extraPay.toFixed(2)}€</p>
         <p><strong>Complemento Voluntario:</strong> ${voluntaryPay.toFixed(2)}€</p>
