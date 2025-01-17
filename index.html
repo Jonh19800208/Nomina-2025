@@ -308,6 +308,16 @@
       </div>
 
       <div class="input-group">
+        <label for="beerCases">Cajas de cerveza:</label>
+        <input type="number" id="beerCases" placeholder="N&#xfa;mero de cajas de cerveza" min="0" value="0">
+      </div>
+
+      <div class="input-group">
+        <label for="sodaCases">Cajas de refresco:</label>
+        <input type="number" id="sodaCases" placeholder="N&#xfa;mero de cajas de refresco" min="0" value="0">
+      </div>
+
+      <div class="input-group">
         <label for="avisosHours">Horas de Avisos:</label>
         <input type="number" id="avisosHours" placeholder="Introduce n&#xfa;mero de horas" min="0" value="0">
       </div>
@@ -334,6 +344,11 @@
       <div class="input-group">
         <label for="irpf">Porcentaje IRPF (%):</label>
         <input type="number" id="irpf" placeholder="Introduce el porcentaje de IRPF" step="0.01">
+      </div>
+
+      <div class="input-group">
+        <label for="comedorDays">D&#xed;as Servicio Comedor:</label>
+        <input type="number" id="comedorDays" placeholder="Introduce n&#xfa;mero de d&#xed;as" min="0" value="0">
       </div>
 
       <button onclick="calculateSalary()">Calcular Salario</button>
@@ -387,6 +402,9 @@ const SEGURIDAD_SOCIAL_RATE = 0.047;
 const DESEMPLEO_RATE = 0.0155;
 const FORMACION_PROFESIONAL_RATE = 0.001;
 const SEGURIDAD_SOCIAL_MEI_RATE = 0.0012;
+const BEER_CASE_PRICE = 3.09;
+const SODA_CASE_PRICE = 4.14;
+const COMEDOR_RATE = 2.97;
 function calculateConvenioPlus(workingDays, category) {
   const rates = {
     'A': 0,
@@ -490,6 +508,8 @@ function calculateSalary() {
   const plusAdelantoTurnoPay = hasPlusAdelantoTurno ? PLUS_ADELANTO_TURNO_RATE : 0;
   const desactivacionFestivoDays = Math.min(5, parseInt(document.getElementById('desactivacionFestivoDays').value) || 0);
   const desactivacionFestivoPay = desactivacionFestivoDays * PLUS_DESACTIVACION_FESTIVO_RATE;
+  const comedorDays = parseInt(document.getElementById('comedorDays').value) || 0;
+  const comedorCost = comedorDays * COMEDOR_RATE;
   const grossSalary = baseSalary + nightShift + overtime + formationPay + weekendPay + adPersonamPV + dammPlus + festivityPay + adPersonam2 + coordinationPlus + estructuralPay + urgentePay + coyunturalPay + dFestivo4TurnoPay + jornadaEspecialPay + disabledAidPay + bocadilloPay + extraPay + voluntaryPay + convenioPlus + avisosPay + preAvisoPay + plusAdelantoTurnoPay + desactivacionFestivoPay;
   const remuneration = grossSalary - overtime;
   const prorrateo = PRORRATEO_RATES[category] * daysInMonth;
@@ -499,7 +519,12 @@ function calculateSalary() {
   const irpfDeduction = grossSalary * irpfPercentage / 100;
   const formacionProfesionalDeduction = contingenciasComunes * FORMACION_PROFESIONAL_RATE;
   const seguridadSocialMEIDeduction = contingenciasComunes * SEGURIDAD_SOCIAL_MEI_RATE;
-  const netSalary = grossSalary - irpfDeduction - UNION_FEE - seguridadSocialDeduction - desempleoDeduction - formacionProfesionalDeduction - seguridadSocialMEIDeduction;
+  const beerCases = parseInt(document.getElementById('beerCases').value) || 0;
+  const sodaCases = parseInt(document.getElementById('sodaCases').value) || 0;
+  const beerCost = beerCases * BEER_CASE_PRICE;
+  const sodaCost = sodaCases * SODA_CASE_PRICE;
+  const beverageCost = beerCost + sodaCost;
+  const netSalary = grossSalary - irpfDeduction - UNION_FEE - seguridadSocialDeduction - desempleoDeduction - formacionProfesionalDeduction - seguridadSocialMEIDeduction - beverageCost - comedorCost;
   const breakdown = document.getElementById('breakdown');
   breakdown.innerHTML = `
         <p><strong>Categoría:</strong> ${category}</p>
@@ -537,6 +562,8 @@ function calculateSalary() {
         <p><strong>Seguridad social MEI (0.12%):</strong> <span class="negative-amount">-${seguridadSocialMEIDeduction.toFixed(2)}€</span></p>
         <p><strong>Cuota Sindical:</strong> <span class="negative-amount">-${UNION_FEE.toFixed(2)}€</span></p>
         <p><strong>Deducción IRPF (${irpfPercentage}%):</strong> <span class="negative-amount">-${irpfDeduction.toFixed(2)}€</span></p>
+        <p><strong>Coste bebidas:</strong> <span class="negative-amount">-${beverageCost.toFixed(2)}€</span></p>
+        <p><strong>Servicio Comedor:</strong> <span class="negative-amount">-${comedorCost.toFixed(2)}€</span></p>
         <p class="total-to-receive"><strong>TOTAL A COBRAR:</strong> ${netSalary.toFixed(2)}€</p>
     `;
 }
