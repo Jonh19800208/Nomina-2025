@@ -204,7 +204,7 @@
 
       <div class="input-group">
         <label for="adPersonam2Rate">Ad-Personam II:</label>
-        <input type="number" id="adPersonam2Rate" placeholder="Introduce PRECIO/UNI" step="0.01">
+        <input type="number" id="adPersonam2Rate" placeholder="Introduce PRECIO/UNI" step="0.001" max="99.999" onchange="validateAdPersonam2()">
       </div>
 
       <div class="input-group">
@@ -252,6 +252,15 @@
           <option value="A2">A2</option>
           <option value="B">B</option>
         </select>
+      </div>
+
+      <div class="input-group">
+        <label for="hasPlusAdelantoTurno">Plus Adelanto Turno + &#xda;ltima Hora</label>
+        <select id="hasPlusAdelantoTurno">
+          <option value="no">No</option>
+          <option value="yes">S&#xed;</option>
+        </select>
+        <small style="display: block; margin-top: 5px; color: #666;">* Un plus Adelanto Turno equivale a una jornada especial B</small>
       </div>
 
       <div class="input-group">
@@ -333,22 +342,18 @@
       </div>
 
       <div class="input-group">
-        <label for="hasPlusAdelantoTurno">Plus Adelanto Turno + &#xda;ltima Hora</label>
-        <select id="hasPlusAdelantoTurno">
-          <option value="no">No</option>
-          <option value="yes">S&#xed;</option>
-        </select>
-        <small style="display: block; margin-top: 5px; color: #666;">* Un plus Adelanto Turno equivale a una jornada especial B</small>
+        <label for="comedorDays">D&#xed;as Servicio Comedor:</label>
+        <input type="number" id="comedorDays" placeholder="Introduce n&#xfa;mero de d&#xed;as" min="0" value="0">
+      </div>
+
+      <div class="input-group">
+        <label for="personalLoan">Pr&#xe9;stamos personales:</label>
+        <input type="number" id="personalLoan" placeholder="Insertar cantidad mensual" step="0.01" min="0" value="0">
       </div>
 
       <div class="input-group">
         <label for="irpf">Porcentaje IRPF (%):</label>
         <input type="number" id="irpf" placeholder="Introduce el porcentaje de IRPF" step="0.01">
-      </div>
-
-      <div class="input-group">
-        <label for="comedorDays">D&#xed;as Servicio Comedor:</label>
-        <input type="number" id="comedorDays" placeholder="Introduce n&#xfa;mero de d&#xed;as" min="0" value="0">
       </div>
 
       <button onclick="calculateSalary()">Calcular Salario</button>
@@ -374,7 +379,7 @@ const NIGHT_HOUR_RATE = 3.8944;
 const OVERTIME_HOUR_RATE = 19.629;
 const FESTIVITY_DAY_RATE = 297.838;
 const WEEKEND_HOUR_RATE = 12.7510;
-const UNION_FEE = 15;
+const UNION_FEE = 15.40;
 const AD_PERSONAM_PV_RATE = 65.0919;
 const COORDINATION_PLUS = 234.195213;
 const ESTRUCTURAL_RATE = 69.846007;
@@ -405,6 +410,13 @@ const SEGURIDAD_SOCIAL_MEI_RATE = 0.0012;
 const BEER_CASE_PRICE = 3.09;
 const SODA_CASE_PRICE = 4.14;
 const COMEDOR_RATE = 2.97;
+function validateAdPersonam2() {
+  const input = document.getElementById('adPersonam2Rate');
+  if (parseFloat(input.value) > 99.999) {
+    alert('El valor máximo permitido es 99.999');
+    input.value = '99.999';
+  }
+}
 function calculateConvenioPlus(workingDays, category) {
   const rates = {
     'A': 0,
@@ -476,7 +488,7 @@ function calculateSalary() {
   const formationPay = formationHours * FORMATION_HOUR_RATE;
   const weekendPay = weekendHours * WEEKEND_HOUR_RATE;
   const adPersonamPV = hasAdPersonamPV ? AD_PERSONAM_PV_RATE : 0;
-  const adPersonam2Rate = parseFloat(document.getElementById('adPersonam2Rate').value) || 0;
+  const adPersonam2Rate = Math.min(99.999, parseFloat(document.getElementById('adPersonam2Rate').value) || 0);
   const adPersonam2 = adPersonam2Rate * daysInMonth;
   const festivityPay = festivityDays * FESTIVITY_DAY_RATE;
   const hasCoordinationPlus = document.getElementById('hasCoordinationPlus').value === 'yes';
@@ -510,6 +522,7 @@ function calculateSalary() {
   const desactivacionFestivoPay = desactivacionFestivoDays * PLUS_DESACTIVACION_FESTIVO_RATE;
   const comedorDays = parseInt(document.getElementById('comedorDays').value) || 0;
   const comedorCost = comedorDays * COMEDOR_RATE;
+  const personalLoan = parseFloat(document.getElementById('personalLoan').value) || 0;
   const grossSalary = baseSalary + nightShift + overtime + formationPay + weekendPay + adPersonamPV + dammPlus + festivityPay + adPersonam2 + coordinationPlus + estructuralPay + urgentePay + coyunturalPay + dFestivo4TurnoPay + jornadaEspecialPay + disabledAidPay + bocadilloPay + extraPay + voluntaryPay + convenioPlus + avisosPay + preAvisoPay + plusAdelantoTurnoPay + desactivacionFestivoPay;
   const remuneration = grossSalary - overtime;
   const prorrateo = PRORRATEO_RATES[category] * daysInMonth;
@@ -524,7 +537,7 @@ function calculateSalary() {
   const beerCost = beerCases * BEER_CASE_PRICE;
   const sodaCost = sodaCases * SODA_CASE_PRICE;
   const beverageCost = beerCost + sodaCost;
-  const netSalary = grossSalary - irpfDeduction - UNION_FEE - seguridadSocialDeduction - desempleoDeduction - formacionProfesionalDeduction - seguridadSocialMEIDeduction - beverageCost - comedorCost;
+  const netSalary = grossSalary - irpfDeduction - UNION_FEE - seguridadSocialDeduction - desempleoDeduction - formacionProfesionalDeduction - seguridadSocialMEIDeduction - beverageCost - comedorCost - personalLoan;
   const breakdown = document.getElementById('breakdown');
   breakdown.innerHTML = `
         <p><strong>Categoría:</strong> ${category}</p>
@@ -553,7 +566,6 @@ function calculateSalary() {
         <p><strong>Paga Extra Verano/Invierno:</strong> ${extraPay.toFixed(2)}€</p>
         <p><strong>Complemento Voluntario:</strong> ${voluntaryPay.toFixed(2)}€</p>
         <p><strong>Plus Adelanto Turno + Última Hora:</strong> ${plusAdelantoTurnoPay.toFixed(2)}€</p>
-        <p><small>* Un plus Adelanto Turno equivale a una jornada especial B</small></p>
         <p><strong>Plus Desactivación festivo:</strong> ${desactivacionFestivoDays} días (${desactivacionFestivoPay.toFixed(2)}€)</p>
         <p><strong>Salario Bruto:</strong> <span class="positive-amount">${grossSalary.toFixed(2)}€</span></p>
         <p><strong>Seguridad social (4.70%):</strong> <span class="negative-amount">-${seguridadSocialDeduction.toFixed(2)}€</span></p>
@@ -564,6 +576,7 @@ function calculateSalary() {
         <p><strong>Deducción IRPF (${irpfPercentage}%):</strong> <span class="negative-amount">-${irpfDeduction.toFixed(2)}€</span></p>
         <p><strong>Coste bebidas:</strong> <span class="negative-amount">-${beverageCost.toFixed(2)}€</span></p>
         <p><strong>Servicio Comedor:</strong> <span class="negative-amount">-${comedorCost.toFixed(2)}€</span></p>
+        <p><strong>Préstamos personales:</strong> <span class="negative-amount">-${personalLoan.toFixed(2)}€</span></p>
         <p class="total-to-receive"><strong>TOTAL A COBRAR:</strong> ${netSalary.toFixed(2)}€</p>
     `;
 }
