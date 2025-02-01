@@ -6,7 +6,7 @@
   <style>
     body {
       position: relative;
-      font-family: 'Roboto', sans-serif;
+      font-family: 'Arial', sans-serif;
       font-size: 21px;
       background: #ff6961;
       min-height: 100vh;
@@ -284,6 +284,11 @@
       </div>
 
       <div class="input-group">
+        <label for="festivityWithRestDays">D&#xed;as festivos con descanso de dos dias:</label>
+        <input type="number" id="festivityWithRestDays" placeholder="Introduce los d&#xed;as festivos con descanso" min="0" value="0">
+      </div>
+
+      <div class="input-group">
         <label for="weekendHours">Horas trabajadas en s&#xe1;bados y domingos:</label>
         <input type="number" id="weekendHours" placeholder="Introduce las horas de fin de semana" min="0" value="0">
       </div>
@@ -365,7 +370,8 @@
     </div>
   </div>
 
-<script>const CATEGORY_SALARIES = {
+<script>
+const CATEGORY_SALARIES = {
   'A': 2000,
   'B': 1800,
   'C': 1691.178836
@@ -378,6 +384,7 @@ const DAMM_PLUS = {
 const NIGHT_HOUR_RATE = 3.8944;
 const OVERTIME_HOUR_RATE = 19.629;
 const FESTIVITY_DAY_RATE = 297.838;
+const FESTIVITY_WITH_REST_RATE = 68.42937;
 const WEEKEND_HOUR_RATE = 12.7510;
 const UNION_FEE = 15.40;
 const AD_PERSONAM_PV_RATE = 65.0919;
@@ -481,6 +488,7 @@ function calculateSalary() {
   const workingDays = parseInt(document.getElementById('workingDays').value) || 22;
   const convenioPlus = calculateConvenioPlus(workingDays, category);
   const festivityDays = parseInt(document.getElementById('festivityDays').value) || 0;
+  const festivityWithRestDays = parseInt(document.getElementById('festivityWithRestDays').value) || 0;
   const hasAdPersonamPV = document.getElementById('hasAdPersonamPV').value === 'yes';
   const dammPlus = DAMM_PLUS[category];
   const nightShift = nightHours * NIGHT_HOUR_RATE;
@@ -491,6 +499,7 @@ function calculateSalary() {
   const adPersonam2Rate = Math.min(99.999, parseFloat(document.getElementById('adPersonam2Rate').value) || 0);
   const adPersonam2 = adPersonam2Rate * daysInMonth;
   const festivityPay = festivityDays * FESTIVITY_DAY_RATE;
+  const festivityWithRestPay = festivityWithRestDays * FESTIVITY_WITH_REST_RATE;
   const hasCoordinationPlus = document.getElementById('hasCoordinationPlus').value === 'yes';
   const coordinationPlus = hasCoordinationPlus ? COORDINATION_PLUS : 0;
   const irpfPercentage = parseFloat(document.getElementById('irpf').value || 0).toFixed(2);
@@ -523,7 +532,7 @@ function calculateSalary() {
   const comedorDays = parseInt(document.getElementById('comedorDays').value) || 0;
   const comedorCost = comedorDays * COMEDOR_RATE;
   const personalLoan = parseFloat(document.getElementById('personalLoan').value) || 0;
-  const grossSalary = baseSalary + nightShift + overtime + formationPay + weekendPay + adPersonamPV + dammPlus + festivityPay + adPersonam2 + coordinationPlus + estructuralPay + urgentePay + coyunturalPay + dFestivo4TurnoPay + jornadaEspecialPay + disabledAidPay + bocadilloPay + extraPay + voluntaryPay + convenioPlus + avisosPay + preAvisoPay + plusAdelantoTurnoPay + desactivacionFestivoPay;
+  const grossSalary = baseSalary + nightShift + overtime + formationPay + weekendPay + adPersonamPV + dammPlus + festivityPay + festivityWithRestPay + adPersonam2 + coordinationPlus + estructuralPay + urgentePay + coyunturalPay + dFestivo4TurnoPay + jornadaEspecialPay + disabledAidPay + bocadilloPay + extraPay + voluntaryPay + convenioPlus + avisosPay + preAvisoPay + plusAdelantoTurnoPay + desactivacionFestivoPay;
   const remuneration = grossSalary - overtime;
   const prorrateo = PRORRATEO_RATES[category] * daysInMonth;
   const contingenciasComunes = remuneration + prorrateo;
@@ -544,6 +553,7 @@ function calculateSalary() {
         <p><strong>Días del mes:</strong> ${daysInMonth}</p>
         <p><strong>Días laborables:</strong> ${workingDays}</p>
         <p><strong>Días festivos trabajados:</strong> ${festivityDays} días (${festivityPay.toFixed(2)}€)</p>
+        <p><strong>Días festivos con descanso de dos dias:</strong> ${festivityWithRestDays} días (${festivityWithRestPay.toFixed(2)}€)</p>
         <p><strong>Horas fin de semana:</strong> ${weekendHours} horas (${weekendPay.toFixed(2)}€)</p>
         <p><strong>Salario Base:</strong> ${baseSalary.toFixed(2)}€</p>
         <p><strong>Plus Convenio:</strong> ${convenioPlus.toFixed(2)}€</p>
@@ -582,6 +592,7 @@ function calculateSalary() {
 }
 document.addEventListener('DOMContentLoaded', function () {
   updateBaseSalary();
-});</script>
+});
+</script>
 </body>
 </html>
