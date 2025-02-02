@@ -175,6 +175,7 @@
           <option value="A">Categor&#xed;a A</option>
           <option value="B">Categor&#xed;a B</option>
           <option value="C">Categor&#xed;a C</option>
+          <option value="GRUPO2">Grupo II</option>
         </select>
       </div>
 
@@ -374,13 +375,17 @@
 const CATEGORY_SALARIES = {
   'A': 2000,
   'B': 1800,
-  'C': 1691.178836
+  'C': 1691.178836,
+  'GRUPO2': 1931.943 // 64.3981 * 30 days
 };
+
 const DAMM_PLUS = {
   'A': 55.555,
   'B': 66.665,
-  'C': 91.0825
+  'C': 91.0825,
+  'GRUPO2': 91.0825 // Using same as category C for now
 };
+
 const NIGHT_HOUR_RATE = 3.8944;
 const OVERTIME_HOUR_RATE = 19.629;
 const FESTIVITY_DAY_RATE = 297.838;
@@ -408,12 +413,13 @@ const PLUS_DESACTIVACION_FESTIVO_RATE = 11.06766905;
 const PRORRATEO_RATES = {
   'A': 7.4228,
   'B': 8.0449,
-  'C': 11.4451
+  'C': 11.4451,
+  'GRUPO2': 11.4451  // Using same as category C for now
 };
 const SEGURIDAD_SOCIAL_RATE = 0.047;
 const DESEMPLEO_RATE = 0.0155;
 const FORMACION_PROFESIONAL_RATE = 0.001;
-const SEGURIDAD_SOCIAL_MEI_RATE = 0.0012;
+const SEGURIDAD_SOCIAL_MEI_RATE = 0.0013;
 const BEER_CASE_PRICE = 3.09;
 const SODA_CASE_PRICE = 4.14;
 const COMEDOR_RATE = 2.97;
@@ -428,7 +434,8 @@ function calculateConvenioPlus(workingDays, category) {
   const rates = {
     'A': 0,
     'B': 13.4183824,
-    'C': 14.5428571
+    'C': 14.5428571,
+    'GRUPO2': 16.9183
   };
   return rates[category] * workingDays;
 }
@@ -447,6 +454,9 @@ function updateBaseSalary() {
   }
 }
 function calculateBaseSalaryForDays(category, daysInMonth) {
+  if (category === 'GRUPO2') {
+    return 64.3981 * daysInMonth;
+  }
   if (category === 'A' && daysInMonth === 28) {
     return 1264.35079;
   }
@@ -581,7 +591,7 @@ function calculateSalary() {
         <p><strong>Seguridad social (4.70%):</strong> <span class="negative-amount">-${seguridadSocialDeduction.toFixed(2)}€</span></p>
         <p><strong>Desempleo (1.55%):</strong> <span class="negative-amount">-${desempleoDeduction.toFixed(2)}€</span></p>
         <p><strong>Formación profesional (0.10%):</strong> <span class="negative-amount">-${formacionProfesionalDeduction.toFixed(2)}€</span></p>
-        <p><strong>Seguridad social MEI (0.12%):</strong> <span class="negative-amount">-${seguridadSocialMEIDeduction.toFixed(2)}€</span></p>
+        <p><strong>Seguridad social MEI (0.13%):</strong> <span class="negative-amount">-${seguridadSocialMEIDeduction.toFixed(2)}€</span></p>
         <p><strong>Cuota Sindical:</strong> <span class="negative-amount">-${UNION_FEE.toFixed(2)}€</span></p>
         <p><strong>Deducción IRPF (${irpfPercentage}%):</strong> <span class="negative-amount">-${irpfDeduction.toFixed(2)}€</span></p>
         <p><strong>Coste bebidas:</strong> <span class="negative-amount">-${beverageCost.toFixed(2)}€</span></p>
