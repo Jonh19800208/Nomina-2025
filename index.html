@@ -353,6 +353,11 @@
       </div>
 
       <div class="input-group">
+        <label for="excesosJornadaDays">D&#xed;as Excesos de jornada 2.024:</label>
+        <input type="number" id="excesosJornadaDays" placeholder="Introduce n&#xfa;mero de d&#xed;as" min="0" value="0">
+      </div>
+
+      <div class="input-group">
         <label for="personalLoan">Pr&#xe9;stamos personales:</label>
         <input type="number" id="personalLoan" placeholder="Insertar cantidad mensual" step="0.01" min="0" value="0">
       </div>
@@ -383,7 +388,7 @@ const DAMM_PLUS = {
   'A': 55.555,
   'B': 66.665,
   'C': 91.0825,
-  'GRUPO2': 91.0825 // Using same as category C for now
+  'GRUPO2': 75.00  // Updated to 75 euros for Grupo II
 };
 
 const NIGHT_HOUR_RATE = 3.8944;
@@ -423,6 +428,7 @@ const SEGURIDAD_SOCIAL_MEI_RATE = 0.0013;
 const BEER_CASE_PRICE = 3.09;
 const SODA_CASE_PRICE = 4.14;
 const COMEDOR_RATE = 2.97;
+const EXCESOS_JORNADA_RATE = 162.9166;
 function validateAdPersonam2() {
   const input = document.getElementById('adPersonam2Rate');
   if (parseFloat(input.value) > 99.999) {
@@ -433,9 +439,9 @@ function validateAdPersonam2() {
 function calculateConvenioPlus(workingDays, category) {
   const rates = {
     'A': 0,
-    'B': 13.4183824,
-    'C': 14.5428571,
-    'GRUPO2': 16.9183
+    'B': 13.7108,
+    'C': 14.8576,
+    'GRUPO2': 17.2845241
   };
   return rates[category] * workingDays;
 }
@@ -541,8 +547,10 @@ function calculateSalary() {
   const desactivacionFestivoPay = desactivacionFestivoDays * PLUS_DESACTIVACION_FESTIVO_RATE;
   const comedorDays = parseInt(document.getElementById('comedorDays').value) || 0;
   const comedorCost = comedorDays * COMEDOR_RATE;
+  const excesosJornadaDays = parseInt(document.getElementById('excesosJornadaDays').value) || 0;
+  const excesosJornadaPay = excesosJornadaDays * EXCESOS_JORNADA_RATE;
   const personalLoan = parseFloat(document.getElementById('personalLoan').value) || 0;
-  const grossSalary = baseSalary + nightShift + overtime + formationPay + weekendPay + adPersonamPV + dammPlus + festivityPay + festivityWithRestPay + adPersonam2 + coordinationPlus + estructuralPay + urgentePay + coyunturalPay + dFestivo4TurnoPay + jornadaEspecialPay + disabledAidPay + bocadilloPay + extraPay + voluntaryPay + convenioPlus + avisosPay + preAvisoPay + plusAdelantoTurnoPay + desactivacionFestivoPay;
+  const grossSalary = baseSalary + nightShift + overtime + formationPay + weekendPay + adPersonamPV + dammPlus + festivityPay + festivityWithRestPay + adPersonam2 + coordinationPlus + estructuralPay + urgentePay + coyunturalPay + dFestivo4TurnoPay + jornadaEspecialPay + disabledAidPay + bocadilloPay + extraPay + voluntaryPay + convenioPlus + avisosPay + preAvisoPay + plusAdelantoTurnoPay + desactivacionFestivoPay + excesosJornadaPay;
   const remuneration = grossSalary - overtime;
   const prorrateo = PRORRATEO_RATES[category] * daysInMonth;
   const contingenciasComunes = remuneration + prorrateo;
@@ -567,7 +575,7 @@ function calculateSalary() {
         <p><strong>Horas fin de semana:</strong> ${weekendHours} horas (${weekendPay.toFixed(2)}€)</p>
         <p><strong>Salario Base:</strong> ${baseSalary.toFixed(2)}€</p>
         <p><strong>Plus Convenio:</strong> ${convenioPlus.toFixed(2)}€</p>
-        <p><strong>Plus DAMM:</strong> ${dammPlus.toFixed(2)}€</p>
+        <p><strong>COMP. DEC. PERSONAL:</strong> ${dammPlus.toFixed(2)}€</p>
         <p><strong>Plus Ad-Personam PV:</strong> ${adPersonamPV.toFixed(2)}€</p>
         <p><strong>Plus Ad-Personam 2:</strong> ${adPersonam2.toFixed(2)}€</p>
         <p><strong>Plus Funcional Coordinación:</strong> ${coordinationPlus.toFixed(2)}€</p>
@@ -587,6 +595,7 @@ function calculateSalary() {
         <p><strong>Complemento Voluntario:</strong> ${voluntaryPay.toFixed(2)}€</p>
         <p><strong>Plus Adelanto Turno + Última Hora:</strong> ${plusAdelantoTurnoPay.toFixed(2)}€</p>
         <p><strong>Plus Desactivación festivo:</strong> ${desactivacionFestivoDays} días (${desactivacionFestivoPay.toFixed(2)}€)</p>
+        <p><strong>Excesos de jornada 2.024:</strong> ${excesosJornadaDays} días (${excesosJornadaPay.toFixed(2)}€)</p>
         <p><strong>Salario Bruto:</strong> <span class="positive-amount">${grossSalary.toFixed(2)}€</span></p>
         <p><strong>Seguridad social (4.70%):</strong> <span class="negative-amount">-${seguridadSocialDeduction.toFixed(2)}€</span></p>
         <p><strong>Desempleo (1.55%):</strong> <span class="negative-amount">-${desempleoDeduction.toFixed(2)}€</span></p>
