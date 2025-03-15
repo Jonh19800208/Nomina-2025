@@ -185,7 +185,13 @@
           <option value="28">28 d&#xed;as (Febrero)</option>
           <option value="30">30 d&#xed;as</option>
           <option value="31">31 d&#xed;as</option>
+          <option value="custom">D&#xed;as sueltos</option>
         </select>
+      </div>
+
+      <div class="input-group" id="customDaysGroup" style="display:none;">
+        <label for="customDays">N&#xfa;mero de d&#xed;as:</label>
+        <input type="number" id="customDays" min="1" max="31" placeholder="Introduce n&#xfa;mero de d&#xed;as" onchange="updateBaseSalary()">
       </div>
 
       <div class="input-group">
@@ -447,10 +453,22 @@ function calculateConvenioPlus(workingDays, category) {
 }
 function updateBaseSalary() {
   const category = document.getElementById('category').value;
-  const daysInMonth = parseInt(document.getElementById('daysInMonth').value) || 30;
+  const daysSelect = document.getElementById('daysInMonth');
+  const customDaysGroup = document.getElementById('customDaysGroup');
+  const customDaysInput = document.getElementById('customDays');
+  
+  if (daysSelect.value === 'custom') {
+    customDaysGroup.style.display = 'block';
+    var daysInMonth = parseInt(customDaysInput.value) || 30;
+  } else {
+    customDaysGroup.style.display = 'none';
+    var daysInMonth = parseInt(daysSelect.value) || 30;
+  }
+
   const workingDays = parseInt(document.getElementById('workingDays').value) || 22;
   const baseSalaryInput = document.getElementById('baseSalary');
   const convenioPlusInput = document.getElementById('convenioPlus');
+  
   if (category) {
     baseSalaryInput.value = calculateBaseSalaryForDays(category, daysInMonth).toFixed(2);
     convenioPlusInput.value = calculateConvenioPlus(workingDays, category).toFixed(2);
@@ -459,43 +477,40 @@ function updateBaseSalary() {
     convenioPlusInput.value = '';
   }
 }
+
 function calculateBaseSalaryForDays(category, daysInMonth) {
   if (category === 'GRUPO2') {
     return 64.3981 * daysInMonth;
   }
-  if (category === 'A' && daysInMonth === 28) {
-    return 1264.35079;
+  // For custom days or standard month lengths
+  if (category === 'A') {
+    return 45.1553853 * daysInMonth;
   }
-  if (category === 'B' && daysInMonth === 28) {
-    return 1370.32616;
+  if (category === 'B') {
+    return 48.94022 * daysInMonth;
   }
-  if (category === 'C' && daysInMonth === 28) {
-    return 1527.516368;
-  }
-  if (category === 'C' && daysInMonth === 30) {
-    return 1636.62468;
-  }
-  if (category === 'B' && daysInMonth === 30) {
-    return 1468.2066;
-  }
-  if (category === 'B' && daysInMonth === 31) {
-    return 1517.14682;
-  }
-  if (category === 'A' && daysInMonth === 31) {
-    return 1399.81694;
-  }
-  if (category === 'A' && daysInMonth === 30) {
-    return 1354.66156;
+  if (category === 'C') {
+    return 54.5541560 * daysInMonth;
   }
   return CATEGORY_SALARIES[category];
 }
+
 function calculateSalary() {
   const category = document.getElementById('category').value;
   if (!category) {
     alert('Por favor, selecciona una categoría');
     return;
   }
-  const daysInMonth = parseInt(document.getElementById('daysInMonth').value) || 30;
+  const daysSelect = document.getElementById('daysInMonth');
+  const customDaysGroup = document.getElementById('customDaysGroup');
+  const customDaysInput = document.getElementById('customDays');
+  
+  if (daysSelect.value === 'custom') {
+    var daysInMonth = parseInt(customDaysInput.value) || 30;
+  } else {
+    var daysInMonth = parseInt(daysSelect.value) || 30;
+  }
+
   const baseSalary = calculateBaseSalaryForDays(category, daysInMonth);
   const nightHours = parseFloat(document.getElementById('nightHours').value) || 0;
   const overtimeHours = parseFloat(document.getElementById('overtimeHours').value) || 0;
