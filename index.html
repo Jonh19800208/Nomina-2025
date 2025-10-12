@@ -158,6 +158,9 @@
       color: green;
       font-weight: bold;
     }
+
+    /* Color numeric codes in parentheses red */
+    .code-paren { color: red; font-weight: bold; }
   </style>
 </head>
 <body style="overflow-x: hidden">
@@ -200,17 +203,17 @@
       </div>
 
       <div class="input-group">
-        <label for="baseSalary">Salario Base:</label>
+        <label for="baseSalary">(321) Salario Base:</label>
         <input type="number" id="baseSalary" readonly>
       </div>
 
       <div class="input-group">
-        <label>Plus Convenio:</label>
+        <label>(329) Plus Convenio:</label>
         <input type="number" id="convenioPlus" readonly>
       </div>
 
       <div class="input-group">
-        <label for="adPersonam2Rate">Ad-Personam II:</label>
+        <label for="adPersonam2Rate">(335) Garantia Ad-Persona2:</label>
         <input type="number" id="adPersonam2Rate" placeholder="Introduce PRECIO/UNI" step="0.001" max="99.999" onchange="validateAdPersonam2()">
       </div>
 
@@ -220,7 +223,12 @@
       </div>
 
       <div class="input-group">
-        <label for="hasAdPersonamPV">Plus Ad-Personam PV</label>
+        <label for="plusAdicionalPersonal">Plus Adicional Persona (fuera de convenio):</label>
+        <input type="number" id="plusAdicionalPersonal" placeholder="Introduce la cantidad" step="0.01" value="0">
+      </div>
+
+      <div class="input-group">
+        <label for="hasAdPersonamPV">(331) Plus Ad-Personam PV:</label>
         <select id="hasAdPersonamPV">
           <option value="no">No</option>
           <option value="yes">S&#xed;</option>
@@ -286,7 +294,7 @@
       </div>
 
       <div class="input-group">
-        <label for="festivityDays">D&#xed;as festivos trabajados:</label>
+        <label for="festivityDays">(330) D&#xed;as festivos trabajados:</label>
         <input type="number" id="festivityDays" placeholder="Introduce los d&#xed;as festivos trabajados" min="0" value="0">
       </div>
 
@@ -296,12 +304,12 @@
       </div>
 
       <div class="input-group">
-        <label for="weekendHours">Horas trabajadas en s&#xe1;bados y domingos:</label>
+        <label for="weekendHours">(386) Horas trabajadas en s&#xe1;bados y domingos:</label>
         <input type="number" id="weekendHours" placeholder="Introduce las horas de fin de semana" min="0" value="0">
       </div>
 
       <div class="input-group">
-        <label for="nightHours">Horas Nocturnas:</label>
+        <label for="nightHours">(345) Horas Nocturnas:</label>
         <input type="number" id="nightHours" placeholder="Introduce n&#xfa;mero de horas nocturnas">
       </div>
 
@@ -354,12 +362,12 @@
       </div>
 
       <div class="input-group">
-        <label for="comedorDays">D&#xed;as Servicio Comedor:</label>
+        <label for="comedorDays">(1526) D&#xed;as Servicio Comedor:</label>
         <input type="number" id="comedorDays" placeholder="Introduce n&#xfa;mero de d&#xed;as" min="0" value="0">
       </div>
 
       <div class="input-group">
-        <label for="excesosJornadaDays">D&#xed;as Excesos de jornada 2.025:</label>
+        <label for="excesosJornadaDays">D&#xed;as Excesos de jornada 2.024:</label>
         <input type="number" id="excesosJornadaDays" placeholder="Introduce n&#xfa;mero de d&#xed;as" min="0" value="0">
       </div>
 
@@ -369,7 +377,7 @@
       </div>
 
       <div class="input-group">
-        <label for="irpf">Porcentaje IRPF (%):</label>
+        <label for="irpf">(1051) Porcentaje IRPF(%):</label>
         <input type="number" id="irpf" placeholder="Introduce el porcentaje de IRPF" step="0.01">
       </div>
 
@@ -433,8 +441,8 @@ const FORMACION_PROFESIONAL_RATE = 0.001;
 const SEGURIDAD_SOCIAL_MEI_RATE = 0.0013;
 const BEER_CASE_PRICE = 3.09;
 const SODA_CASE_PRICE = 4.14;
-const COMEDOR_RATE = 3.52;
-const EXCESOS_JORNADA_RATE = 165.360349;
+const COMEDOR_RATE = 2.97;
+const EXCESOS_JORNADA_RATE = 162.9166;
 function validateAdPersonam2() {
   const input = document.getElementById('adPersonam2Rate');
   if (parseFloat(input.value) > 99.999) {
@@ -442,6 +450,29 @@ function validateAdPersonam2() {
     input.value = '99.999';
   }
 }
+
+/* Add session storage save/load functions */
+function saveFormState() {
+  const fields = Array.from(document.querySelectorAll('input,select'));
+  const state = {};
+  fields.forEach(f => state[f.id || f.name || f.dataset.id || ('el_'+Math.random())] = {id: f.id, value: f.value});
+  sessionStorage.setItem('salaryFormState', JSON.stringify(state));
+}
+function loadFormState() {
+  const raw = sessionStorage.getItem('salaryFormState');
+  if (!raw) return;
+  try {
+    const state = JSON.parse(raw);
+    Object.values(state).forEach(item => {
+      if (!item || !item.id) return;
+      const el = document.getElementById(item.id);
+      if (el) el.value = item.value;
+    });
+  } catch(e) {
+    console.warn('Could not load form state', e);
+  }
+}
+
 function calculateConvenioPlus(workingDays, category) {
   const rates = {
     'A': 0,
@@ -552,6 +583,7 @@ function calculateSalary() {
   const extraPay = hasExtraPay ? baseSalary + adPersonam2 + adPersonamPV : 0;
   const voluntaryRate = parseFloat(document.getElementById('voluntaryRate').value) || 0;
   const voluntaryPay = voluntaryRate * daysInMonth;
+  const plusAdicionalPersonalPay = parseFloat(document.getElementById('plusAdicionalPersonal').value) || 0;
   const avisosHours = parseFloat(document.getElementById('avisosHours').value) || 0;
   const avisosPay = avisosHours * AVISOS_RATE;
   const preAvisoDays = Math.min(5, parseInt(document.getElementById('preAvisoDays').value) || 0);
@@ -565,7 +597,7 @@ function calculateSalary() {
   const excesosJornadaDays = parseInt(document.getElementById('excesosJornadaDays').value) || 0;
   const excesosJornadaPay = excesosJornadaDays * EXCESOS_JORNADA_RATE;
   const personalLoan = parseFloat(document.getElementById('personalLoan').value) || 0;
-  const grossSalary = baseSalary + nightShift + overtime + formationPay + weekendPay + adPersonamPV + dammPlus + festivityPay + festivityWithRestPay + adPersonam2 + coordinationPlus + estructuralPay + urgentePay + coyunturalPay + dFestivo4TurnoPay + jornadaEspecialPay + disabledAidPay + bocadilloPay + extraPay + voluntaryPay + convenioPlus + avisosPay + preAvisoPay + plusAdelantoTurnoPay + desactivacionFestivoPay + excesosJornadaPay;
+  const grossSalary = baseSalary + nightShift + overtime + formationPay + weekendPay + adPersonamPV + dammPlus + festivityPay + festivityWithRestPay + adPersonam2 + coordinationPlus + estructuralPay + urgentePay + coyunturalPay + dFestivo4TurnoPay + jornadaEspecialPay + disabledAidPay + bocadilloPay + extraPay + voluntaryPay + convenioPlus + avisosPay + preAvisoPay + plusAdelantoTurnoPay + desactivacionFestivoPay + excesosJornadaPay + plusAdicionalPersonalPay;
   const remuneration = grossSalary - overtime;
   const prorrateo = PRORRATEO_RATES[category] * daysInMonth;
   const contingenciasComunes = remuneration + prorrateo;
@@ -587,7 +619,7 @@ function calculateSalary() {
         <p><strong>Días laborables:</strong> ${workingDays}</p>
         <p><strong>Días festivos trabajados:</strong> ${festivityDays} días (${festivityPay.toFixed(2)}€)</p>
         <p><strong>Días festivos con descanso de dos dias:</strong> ${festivityWithRestDays} días (${festivityWithRestPay.toFixed(2)}€)</p>
-        <p><strong>Horas fin de semana:</strong> ${weekendHours} horas (${weekendPay.toFixed(2)}€)</p>
+        <p><strong>Horas trabajadas en sábados y domingos:</strong> ${weekendHours} horas (${weekendPay.toFixed(2)}€)</p>
         <p><strong>Salario Base:</strong> ${baseSalary.toFixed(2)}€</p>
         <p><strong>Plus Convenio:</strong> ${convenioPlus.toFixed(2)}€</p>
         <p><strong>COMP. DEC. PERSONAL:</strong> ${dammPlus.toFixed(2)}€</p>
@@ -608,6 +640,7 @@ function calculateSalary() {
         <p><strong>Plus bocadillo en Puesto:</strong> ${bocadilloPay.toFixed(2)}€</p>
         <p><strong>Paga Extra Verano/Invierno:</strong> ${extraPay.toFixed(2)}€</p>
         <p><strong>Complemento Voluntario:</strong> ${voluntaryPay.toFixed(2)}€</p>
+        <p><strong>Plus Adicional Persona (fuera de convenio):</strong> ${plusAdicionalPersonalPay.toFixed(2)}€</p>
         <p><strong>Plus Adelanto Turno + Última Hora:</strong> ${plusAdelantoTurnoPay.toFixed(2)}€</p>
         <p><strong>Plus Desactivación festivo:</strong> ${desactivacionFestivoDays} días (${desactivacionFestivoPay.toFixed(2)}€)</p>
         <p><strong>Excesos de jornada 2.024:</strong> ${excesosJornadaDays} días (${excesosJornadaPay.toFixed(2)}€)</p>
@@ -619,14 +652,44 @@ function calculateSalary() {
         <p><strong>Cuota Sindical:</strong> <span class="negative-amount">-${UNION_FEE.toFixed(2)}€</span></p>
         <p><strong>Deducción IRPF (${irpfPercentage}%):</strong> <span class="negative-amount">-${irpfDeduction.toFixed(2)}€</span></p>
         <p><strong>Coste bebidas:</strong> <span class="negative-amount">-${beverageCost.toFixed(2)}€</span></p>
-        <p><strong>Servicio Comedor:</strong> <span class="negative-amount">-${comedorCost.toFixed(2)}€</span></p>
+        <p><strong>Días Servicio Comedor:</strong> <span class="negative-amount">-${comedorCost.toFixed(2)}€</span></p>
         <p><strong>Préstamos personales:</strong> <span class="negative-amount">-${personalLoan.toFixed(2)}€</span></p>
         <p class="total-to-receive"><strong>TOTAL A COBRAR:</strong> ${netSalary.toFixed(2)}€</p>
     `;
+  // Highlight numeric codes in parentheses inside the breakdown
+  highlightCodes(breakdown);
 }
 document.addEventListener('DOMContentLoaded', function () {
   updateBaseSalary();
+  loadFormState(); /* restore previous session values (cleared when browser closed) */
+
+  // Highlight numeric codes in parentheses across the form labels initially
+  highlightCodes(document);
+
+  /* Save state on every change to inputs/selects */
+  document.querySelectorAll('input,select').forEach(el => {
+    el.addEventListener('change', () => {
+      updateBaseSalary(); // keep derived fields in sync
+      saveFormState();
+    });
+    el.addEventListener('input', () => saveFormState());
+  });
 });
+
+// Wrap numeric codes in parentheses like (321) with a red span inside a root element
+function highlightCodes(root) {
+  try {
+    root = root || document;
+    // elements to scan (labels, breakdown paragraphs, strong tags, and inputs' previous labels)
+    const selectors = 'label, .breakdown p, .breakdown strong, .input-group';
+    root.querySelectorAll(selectors).forEach(el => {
+      if (el.dataset.codeProcessed) return;
+      // Replace occurrences of (digits...) with a span
+      el.innerHTML = el.innerHTML.replace(/\((\d+)\)/g, '<span class="code-paren">($1)</span>');
+      el.dataset.codeProcessed = '1';
+    });
+  } catch (e) { console.warn('highlightCodes error', e); }
+}
 </script>
 </body>
 </html>
