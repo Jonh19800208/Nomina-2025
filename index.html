@@ -244,11 +244,8 @@
       </div>
 
       <div class="input-group">
-        <label for="hasDFestivo4Turno">Plus D-Festivo 4&#xba;Turno</label>
-        <select id="hasDFestivo4Turno">
-          <option value="no">No</option>
-          <option value="yes">S&#xed;</option>
-        </select>
+        <label for="hasDFestivo4Turno">Plus D-Festivo 4ºTurno</label>
+        <input type="number" id="dFestivo4TurnoDays" placeholder="Introduce número de días" min="0" value="0">
       </div>
 
       <div class="input-group">
@@ -571,8 +568,9 @@ function calculateSalary() {
   const estructuralPay = estructuralDays * ESTRUCTURAL_RATE;
   const urgentePay = urgenteDays * URGENTE_RATE;
   const coyunturalPay = coyunturalDays * COYUNTURAL_RATE;
-  const hasDFestivo4Turno = document.getElementById('hasDFestivo4Turno').value === 'yes';
-  const dFestivo4TurnoPay = hasDFestivo4Turno ? D_FESTIVO_4TURNO_RATE : 0;
+  const hasDFestivo4Turno = document.getElementById('hasDFestivo4Turno');
+  const dFestivo4TurnoDays = parseInt(document.getElementById('dFestivo4TurnoDays').value) || 0;
+  const dFestivo4TurnoPay = dFestivo4TurnoDays * D_FESTIVO_4TURNO_RATE;
   const jornadaEspecialType = document.getElementById('jornadaEspecial').value;
   const jornadaEspecialPay = jornadaEspecialType !== 'none' ? JORNADA_ESPECIAL_RATES[jornadaEspecialType] : 0;
   const hasDisabledAid = document.getElementById('hasDisabledAid').value === 'yes';
@@ -626,15 +624,7 @@ function calculateSalary() {
         <p><strong>Plus Ad-Personam PV:</strong> ${adPersonamPV.toFixed(2)}€</p>
         <p><strong>Plus Ad-Personam 2:</strong> ${adPersonam2.toFixed(2)}€</p>
         <p><strong>Plus Funcional Coordinación:</strong> ${coordinationPlus.toFixed(2)}€</p>
-        <p><strong>Flexibilidad Estructural:</strong> ${estructuralDays} días (${estructuralPay.toFixed(2)}€)</p>
-        <p><strong>Flexibilidad Urgente:</strong> ${urgenteDays} días (${urgentePay.toFixed(2)}€)</p>
-        <p><strong>Flexibilidad Coyuntural:</strong> ${coyunturalDays} días (${coyunturalPay.toFixed(2)}€)</p>
-        <p><strong>Horas Nocturnas:</strong> ${nightHours} horas (${nightShift.toFixed(2)}€)</p>
-        <p><strong>Horas Extras:</strong> ${overtimeHours} horas (${overtime.toFixed(2)}€)</p>
-        <p><strong>Horas Formación:</strong> ${formationHours} horas (${formationPay.toFixed(2)}€)</p>
-        <p><strong>Horas de Avisos:</strong> ${avisosHours} horas (${avisosPay.toFixed(2)}€)</p>
-        <p><strong>Pre-Aviso 4ºTurno:</strong> ${preAvisoDays} días (${preAvisoPay.toFixed(2)}€)</p>
-        <p><strong>Plus D-Festivo 4ºTurno:</strong> ${dFestivo4TurnoPay.toFixed(2)}€</p>
+        <p><strong>Plus D-Festivo 4ºTurno:</strong> ${dFestivo4TurnoDays} días (${dFestivo4TurnoPay.toFixed(2)}€)</p>
         <p><strong>Jornada Especial (${jornadaEspecialType}):</strong> ${jornadaEspecialPay.toFixed(2)}€</p>
         <p><strong>Ayuda disminuido/a:</strong> ${disabledAidPay.toFixed(2)}€</p>
         <p><strong>Plus bocadillo en Puesto:</strong> ${bocadilloPay.toFixed(2)}€</p>
