@@ -3,10 +3,12 @@
   <title></title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&amp;display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Arial&amp;display=swap" rel="stylesheet">
+  <!-- Load Nexa webfont -->
+  <link href="https://fonts.cdnfonts.com/css/nexa" rel="stylesheet">
   <style>
     body {
       position: relative;
-      font-family: 'Arial', sans-serif;
+      font-family: 'Nexa', 'Arial', sans-serif;
       font-size: 21px;
       background: #ff6961;
       min-height: 100vh;
@@ -42,7 +44,7 @@
       box-shadow: 0 10px 20px rgba(0,0,0,0.1);
       width: 100%;
       max-width: 500px;
-      border: 2px solid #ff0000;
+      border: 4px solid #ff0000;
     }
 
     .header-logos {
@@ -91,7 +93,7 @@
     .result {
       margin-top: 2rem;
       padding: 1rem;
-      background: #ff0000;
+      background: #FFD4A3; /* light orange */
       border-radius: 5px;
       text-align: center;
       color: white;
@@ -374,6 +376,14 @@
       </div>
 
       <div class="input-group">
+        <label for="unionFeeSelect">Cuota Sindical:</label>
+        <select id="unionFeeSelect">
+          <option value="yes">S&#xed;</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+
+      <div class="input-group">
         <label for="irpf">(1051) Porcentaje IRPF(%):</label>
         <input type="number" id="irpf" placeholder="Introduce el porcentaje de IRPF" step="0.01">
       </div>
@@ -609,7 +619,9 @@ function calculateSalary() {
   const beerCost = beerCases * BEER_CASE_PRICE;
   const sodaCost = sodaCases * SODA_CASE_PRICE;
   const beverageCost = beerCost + sodaCost;
-  const netSalary = grossSalary - irpfDeduction - UNION_FEE - seguridadSocialDeduction - desempleoDeduction - formacionProfesionalDeduction - seguridadSocialMEIDeduction - beverageCost - comedorCost - personalLoan;
+  const unionSelected = document.getElementById('unionFeeSelect').value === 'yes';
+  const unionApplied = unionSelected ? UNION_FEE : 0;
+  const netSalary = grossSalary - irpfDeduction - unionApplied - seguridadSocialDeduction - desempleoDeduction - formacionProfesionalDeduction - seguridadSocialMEIDeduction - beverageCost - comedorCost - personalLoan;
   const breakdown = document.getElementById('breakdown');
   breakdown.innerHTML = `
         <p><strong>Categoría:</strong> ${category}</p>
@@ -639,11 +651,11 @@ function calculateSalary() {
         <p><strong>Desempleo (1.55%):</strong> <span class="negative-amount">-${desempleoDeduction.toFixed(2)}€</span></p>
         <p><strong>Formación profesional (0.10%):</strong> <span class="negative-amount">-${formacionProfesionalDeduction.toFixed(2)}€</span></p>
         <p><strong>Seguridad social MEI (0.13%):</strong> <span class="negative-amount">-${seguridadSocialMEIDeduction.toFixed(2)}€</span></p>
-        <p><strong>Cuota Sindical:</strong> <span class="negative-amount">-${UNION_FEE.toFixed(2)}€</span></p>
+        <p><strong>Préstamos personales:</strong> <span class="negative-amount">-${personalLoan.toFixed(2)}€</span></p>
+        <p><strong>Cuota Sindical (${unionSelected ? 'Sí' : 'No'}):</strong> <span class="negative-amount">-${unionApplied.toFixed(2)}€</span></p>
         <p><strong>Deducción IRPF (${irpfPercentage}%):</strong> <span class="negative-amount">-${irpfDeduction.toFixed(2)}€</span></p>
         <p><strong>Coste bebidas:</strong> <span class="negative-amount">-${beverageCost.toFixed(2)}€</span></p>
         <p><strong>Días Servicio Comedor:</strong> <span class="negative-amount">-${comedorCost.toFixed(2)}€</span></p>
-        <p><strong>Préstamos personales:</strong> <span class="negative-amount">-${personalLoan.toFixed(2)}€</span></p>
         <p class="total-to-receive"><strong>TOTAL A COBRAR:</strong> ${netSalary.toFixed(2)}€</p>
     `;
   // Highlight numeric codes in parentheses inside the breakdown
