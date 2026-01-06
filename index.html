@@ -9,7 +9,7 @@
     body {
       position: relative;
       font-family: 'Nexa', 'Arial', sans-serif;
-      font-size: 22px;
+      font-size: 21px;
       background: #ff6961;
       min-height: 100vh;
       margin: 0;
@@ -399,43 +399,43 @@
 
 <script>
 const CATEGORY_SALARIES = {
-  'A': 1395.3,
-  'B': 1512.252,
-  'C': 1685.727,
-  'GRUPO2': 1989.9 // 66.3300 * 30 days
+  'A': 2000,
+  'B': 1800,
+  'C': 1691.178836,
+  'GRUPO2': 1931.943 // 64.3981 * 30 days
 };
 
 const DAMM_PLUS = {
-  'A': 75.555933333,  //20.0001
-  'B': 103.99886667, // 23.9997
-  'C': 137.20553333, // más tres porciento de 1092.99 = 32.7897
-  'GRUPO2': 128.25 // Updated to 75 euros for Grupo II // formula es la cantidad anual entre 12 mas 3% año anterior del computo anual // 27
+  'A': 55.555,
+  'B': 66.665,
+  'C': 91.0825,
+  'GRUPO2': 75.00  // Updated to 75 euros for Grupo II
 };
 
-const NIGHT_HOUR_RATE = 4.01126996;
-const OVERTIME_HOUR_RATE = 19.9240992;
-const FESTIVITY_DAY_RATE = 302.306339;
-const FESTIVITY_WITH_REST_RATE = 69.45581;
-const WEEKEND_HOUR_RATE = 12.9422744;
-const UNION_FEE = 15.40; //*cuota sindical*
-const AD_PERSONAM_PV_RATE = 71.044657;
-const COORDINATION_PLUS = 237,708141;
-const ESTRUCTURAL_RATE = 70.8936971;
-const URGENTE_RATE = 77.9830874;
-const COYUNTURAL_RATE = 74.4383923;
-const D_FESTIVO_4TURNO_RATE = 103.53781;
+const NIGHT_HOUR_RATE = 3.89443685;
+const OVERTIME_HOUR_RATE = 19.629;
+const FESTIVITY_DAY_RATE = 297.838;
+const FESTIVITY_WITH_REST_RATE = 68.42937;
+const WEEKEND_HOUR_RATE = 12.7510;
+const UNION_FEE = 15.40;
+const AD_PERSONAM_PV_RATE = 65.0919;
+const COORDINATION_PLUS = 234.195213;
+const ESTRUCTURAL_RATE = 69.846007;
+const URGENTE_RATE = 76.830628;
+const COYUNTURAL_RATE = 73.3383175;
+const D_FESTIVO_4TURNO_RATE = 102.007695;
 const JORNADA_ESPECIAL_RATES = {
-  'A1': 217.227474,
-  'A2': 240.114541,
-  'B': 32.4801205
+  'A1': 214.0172216,
+  'A2': 236.56605,
+  'B': 32.00011876
 };
-const FORMATION_HOUR_RATE = 10.82671;
-const DISABLED_AID_RATE = 253.375185;
-const BOCADILLO_RATE = 10.9786879;
-const AVISOS_RATE = 30.204713;
-const PRE_AVISO_RATE = 33.7010522;
-const PLUS_ADELANTO_TURNO_RATE = 63.2879272571;
-const PLUS_DESACTIVACION_FESTIVO_RATE = 11.2336841;
+const FORMATION_HOUR_RATE = 10.66671;
+const DISABLED_AID_RATE = 249.630724;
+const BOCADILLO_RATE = 10.81644133;
+const AVISOS_RATE = 29.75833758;
+const PRE_AVISO_RATE = 33.20300714;
+const PLUS_ADELANTO_TURNO_RATE = 61.44458957;
+const PLUS_DESACTIVACION_FESTIVO_RATE = 11.06766905;
 const PRORRATEO_RATES = {
   'A': 7.4228,
   'B': 8.0449,
@@ -445,10 +445,10 @@ const PRORRATEO_RATES = {
 const SEGURIDAD_SOCIAL_RATE = 0.047;
 const DESEMPLEO_RATE = 0.0155;
 const FORMACION_PROFESIONAL_RATE = 0.001;
-const SEGURIDAD_SOCIAL_MEI_RATE = 0.0015;
-const BEER_CASE_PRICE = 3.09; // subida del 3%---------
-const SODA_CASE_PRICE = 4.14; // subida del 3%------------
-const COMEDOR_RATE = 2.97; // subida del 3%-------------
+const SEGURIDAD_SOCIAL_MEI_RATE = 0.0013;
+const BEER_CASE_PRICE = 3.09;
+const SODA_CASE_PRICE = 4.14;
+const COMEDOR_RATE = 2.97;
 const EXCESOS_JORNADA_RATE = 165.360349;
 function validateAdPersonam2() {
   const input = document.getElementById('adPersonam2Rate');
@@ -483,9 +483,9 @@ function loadFormState() {
 function calculateConvenioPlus(workingDays, category) {
   const rates = {
     'A': 0,
-    'B': 13.8770491803787,
-    'C': 15.04098360655738,
-    'GRUPO2':  17.49590163934426 //divisor de 244  // dias de convenio anual / dias a trabajar en el año-------------
+    'B': 13.7108,
+    'C': 14.8576,
+    'GRUPO2': 17.2845241
   };
   return rates[category] * workingDays;
 }
@@ -518,17 +518,17 @@ function updateBaseSalary() {
 
 function calculateBaseSalaryForDays(category, daysInMonth) {
   if (category === 'GRUPO2') {
-    return 66.3300 * daysInMonth;
+    return 64.3981 * daysInMonth;
   }
   // For custom days or standard month lengths
   if (category === 'A') {
-    return 46.5100 * daysInMonth;
+    return 45.1553853 * daysInMonth;
   }
   if (category === 'B') {
-    return 50.4084 * daysInMonth;
+    return 48.94022 * daysInMonth;
   }
   if (category === 'C') {
-    return 56.1909 * daysInMonth;
+    return 54.5541560 * daysInMonth;
   }
   return CATEGORY_SALARIES[category];
 }
@@ -627,11 +627,12 @@ function calculateSalary() {
         <p><strong>Categoría:</strong> ${category}</p>
         <p><strong>Días del mes:</strong> ${daysInMonth}</p>
         <p><strong>Días laborables:</strong> ${workingDays}</p>
+        <p><strong>Salario Base:</strong> ${baseSalary.toFixed(2)}€</p>
+        <p><strong>Plus Convenio:</strong> ${convenioPlus.toFixed(2)}€</p>
         <p><strong>Días festivos trabajados:</strong> ${festivityDays} días (${festivityPay.toFixed(2)}€)</p>
         <p><strong>Días festivos con descanso de dos dias:</strong> ${festivityWithRestDays} días (${festivityWithRestPay.toFixed(2)}€)</p>
         <p><strong>Horas trabajadas en sábados y domingos:</strong> ${weekendHours} horas (${weekendPay.toFixed(2)}€)</p>
-        <p><strong>Salario Base:</strong> ${baseSalary.toFixed(2)}€</p>
-        <p><strong>Plus Convenio:</strong> ${convenioPlus.toFixed(2)}€</p>
+        <p><strong>Horas Nocturnas:</strong> ${nightHours} horas (${nightShift.toFixed(2)}€)</p>
         <p><strong>COMP. DEC. PERSONAL:</strong> ${dammPlus.toFixed(2)}€</p>
         <p><strong>Plus Ad-Personam PV:</strong> ${adPersonamPV.toFixed(2)}€</p>
         <p><strong>Plus Ad-Personam 2:</strong> ${adPersonam2.toFixed(2)}€</p>
@@ -645,7 +646,7 @@ function calculateSalary() {
         <p><strong>Plus Adicional Persona (fuera de convenio):</strong> ${plusAdicionalPersonalPay.toFixed(2)}€</p>
         <p><strong>Plus Adelanto Turno + Última Hora:</strong> ${plusAdelantoTurnoPay.toFixed(2)}€</p>
         <p><strong>Plus Desactivación festivo:</strong> ${desactivacionFestivoDays} días (${desactivacionFestivoPay.toFixed(2)}€)</p>
-        <p><strong>Excesos de jornada 2.024:</strong> ${excesosJornadaDays} días (${excesosJornadaPay.toFixed(2)}€)</p>
+        <p><strong>Excesos de jornada 2.025:</strong> ${excesosJornadaDays} días (${excesosJornadaPay.toFixed(2)}€)</p>
         <p><strong>Salario Bruto:</strong> <span class="positive-amount">${grossSalary.toFixed(2)}€</span></p>
         <p><strong>Seguridad social (4.70%):</strong> <span class="negative-amount">-${seguridadSocialDeduction.toFixed(2)}€</span></p>
         <p><strong>Desempleo (1.55%):</strong> <span class="negative-amount">-${desempleoDeduction.toFixed(2)}€</span></p>
