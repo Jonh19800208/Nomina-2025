@@ -399,10 +399,10 @@
 
 <script>
 const CATEGORY_SALARIES = {
-  'A': 2000,
-  'B': 1800,
-  'C': 1691.178836,
-  'GRUPO2': 1931.943 // 64.3981 * 30 days
+  'A': 2060,
+  'B': 1854,
+  'C': 1741.91420108,
+  'GRUPO2': 1989.90129 // 66.330043 * 30 days
 };
 
 const DAMM_PLUS = {
@@ -418,7 +418,7 @@ const FESTIVITY_DAY_RATE = 297.838;
 const FESTIVITY_WITH_REST_RATE = 68.42937;
 const WEEKEND_HOUR_RATE = 12.7510;
 const UNION_FEE = 15.40;
-const AD_PERSONAM_PV_RATE = 65.0919;
+const AD_PERSONAM_PV_RATE = 67.044657;
 const COORDINATION_PLUS = 234.195213;
 const ESTRUCTURAL_RATE = 69.846007;
 const URGENTE_RATE = 76.830628;
@@ -483,9 +483,9 @@ function loadFormState() {
 function calculateConvenioPlus(workingDays, category) {
   const rates = {
     'A': 0,
-    'B': 13.7108,
-    'C': 14.8576,
-    'GRUPO2': 17.2845241
+    'B': 14.122124,
+    'C': 15.303328,
+    'GRUPO2': 17.803059823
   };
   return rates[category] * workingDays;
 }
@@ -518,17 +518,17 @@ function updateBaseSalary() {
 
 function calculateBaseSalaryForDays(category, daysInMonth) {
   if (category === 'GRUPO2') {
-    return 64.3981 * daysInMonth;
+    return 66.330043 * daysInMonth;
   }
   // For custom days or standard month lengths
   if (category === 'A') {
-    return 45.1553853 * daysInMonth;
+    return 46.510046859 * daysInMonth;
   }
   if (category === 'B') {
-    return 48.94022 * daysInMonth;
+    return 50.4085266 * daysInMonth;
   }
   if (category === 'C') {
-    return 54.5541560 * daysInMonth;
+    return 56.19078068 * daysInMonth;
   }
   return CATEGORY_SALARIES[category];
 }
