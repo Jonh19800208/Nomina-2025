@@ -1,14 +1,13 @@
 <html>
 <head>
   <title></title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&amp;display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Arial&amp;display=swap" rel="stylesheet">
-  <!-- Load Nexa webfont -->
+  <!-- Load Neoris Versátil webfont -->
+  <link href="https://fonts.cdnfonts.com/css/neoris-versatil" rel="stylesheet">
   <link href="https://fonts.cdnfonts.com/css/nexa" rel="stylesheet">
   <style>
     body {
       position: relative;
-      font-family: 'Nexa', 'Arial', sans-serif;
+      font-family: 'Neoris Versatil', 'Nexa', 'Arial', sans-serif;
       font-size: 21px;
       background: #ff6961;
       min-height: 100vh;
@@ -246,6 +245,11 @@
       </div>
 
       <div class="input-group">
+        <label for="plusFuncionalWeeks">Plus Funcional Coordinación (por semana):</label>
+        <input type="number" id="plusFuncionalWeeks" placeholder="Introduce número de semanas (58,55€/semana)" min="0" value="0" step="1">
+      </div>
+
+      <div class="input-group">
         <label for="hasDFestivo4Turno">Plus D-Festivo 4ºTurno</label>
         <input type="number" id="dFestivo4TurnoDays" placeholder="Introduce número de días" min="0" value="0">
       </div>
@@ -406,9 +410,9 @@ const CATEGORY_SALARIES = {
 };
 
 const DAMM_PLUS = {
-  'A': 112.92,
+  'A': 112.78,
   'B': 148.65,
-  'C': 198.06,
+  'C': 198.23,
   'GRUPO2': 178.50
 };
 
@@ -420,6 +424,7 @@ const WEEKEND_HOUR_RATE = 12.7510;
 const UNION_FEE = 15.40;
 const AD_PERSONAM_PV_RATE = 67.044657;
 const COORDINATION_PLUS = 234.195213;
+const PLUS_FUNCIONAL_WEEK_RATE = 58.55;
 const ESTRUCTURAL_RATE = 69.846007;
 const URGENTE_RATE = 76.830628;
 const COYUNTURAL_RATE = 73.3383175;
@@ -571,6 +576,8 @@ function calculateSalary() {
   const festivityWithRestPay = festivityWithRestDays * FESTIVITY_WITH_REST_RATE;
   const hasCoordinationPlus = document.getElementById('hasCoordinationPlus').value === 'yes';
   const coordinationPlus = hasCoordinationPlus ? COORDINATION_PLUS : 0;
+  const plusFuncionalWeeks = parseInt(document.getElementById('plusFuncionalWeeks').value) || 0;
+  const plusFuncionalPay = plusFuncionalWeeks * PLUS_FUNCIONAL_WEEK_RATE;
   const irpfPercentage = parseFloat(document.getElementById('irpf').value || 0).toFixed(2);
   const estructuralDays = parseInt(document.getElementById('estructuralDays').value) || 0;
   const urgenteDays = parseInt(document.getElementById('urgenteDays').value) || 0;
@@ -592,6 +599,8 @@ function calculateSalary() {
   const voluntaryRate = parseFloat(document.getElementById('voluntaryRate').value) || 0;
   const voluntaryPay = voluntaryRate * daysInMonth;
   const plusAdicionalPersonalPay = parseFloat(document.getElementById('plusAdicionalPersonal').value) || 0;
+  // include plus funcional weekly pay
+  // plusFuncionalPay already computed above
   const avisosHours = parseFloat(document.getElementById('avisosHours').value) || 0;
   const avisosPay = avisosHours * AVISOS_RATE;
   const preAvisoDays = Math.min(5, parseInt(document.getElementById('preAvisoDays').value) || 0);
@@ -605,7 +614,7 @@ function calculateSalary() {
   const excesosJornadaDays = parseInt(document.getElementById('excesosJornadaDays').value) || 0;
   const excesosJornadaPay = excesosJornadaDays * EXCESOS_JORNADA_RATE;
   const personalLoan = parseFloat(document.getElementById('personalLoan').value) || 0;
-  const grossSalary = baseSalary + nightShift + overtime + formationPay + weekendPay + adPersonamPV + dammPlus + festivityPay + festivityWithRestPay + adPersonam2 + coordinationPlus + estructuralPay + urgentePay + coyunturalPay + dFestivo4TurnoPay + jornadaEspecialPay + disabledAidPay + bocadilloPay + extraPay + voluntaryPay + convenioPlus + avisosPay + preAvisoPay + plusAdelantoTurnoPay + desactivacionFestivoPay + excesosJornadaPay + plusAdicionalPersonalPay;
+  const grossSalary = baseSalary + nightShift + overtime + formationPay + weekendPay + adPersonamPV + dammPlus + festivityPay + festivityWithRestPay + adPersonam2 + coordinationPlus + plusFuncionalPay + estructuralPay + urgentePay + coyunturalPay + dFestivo4TurnoPay + jornadaEspecialPay + disabledAidPay + bocadilloPay + extraPay + voluntaryPay + convenioPlus + avisosPay + preAvisoPay + plusAdelantoTurnoPay + desactivacionFestivoPay + excesosJornadaPay + plusAdicionalPersonalPay;
   const remuneration = grossSalary - overtime;
   const prorrateo = PRORRATEO_RATES[category] * daysInMonth;
   const contingenciasComunes = remuneration + prorrateo;
@@ -637,6 +646,7 @@ function calculateSalary() {
         <p><strong>Plus Ad-Personam PV:</strong> ${adPersonamPV.toFixed(2)}€</p>
         <p><strong>Plus Ad-Personam 2:</strong> ${adPersonam2.toFixed(2)}€</p>
         <p><strong>Plus Funcional Coordinación:</strong> ${coordinationPlus.toFixed(2)}€</p>
+        <p><strong>Plus Funcional Coordinación (por semana):</strong> ${plusFuncionalWeeks} semanas (${plusFuncionalPay.toFixed(2)}€)</p>
         <p><strong>Plus D-Festivo 4ºTurno:</strong> ${dFestivo4TurnoDays} días (${dFestivo4TurnoPay.toFixed(2)}€)</p>
         <p><strong>Jornada Especial (${jornadaEspecialType}):</strong> ${jornadaEspecialPay.toFixed(2)}€</p>
         <p><strong>Ayuda disminuido/a:</strong> ${disabledAidPay.toFixed(2)}€</p>
