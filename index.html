@@ -246,7 +246,7 @@
 
       <div class="input-group">
         <label for="plusFuncionalWeeks">Plus Funcional Coordinación (por semana):</label>
-        <input type="number" id="plusFuncionalWeeks" placeholder="Introduce número de semanas (58,55€/semana)" min="0" value="0" step="1">
+        <input type="number" id="plusFuncionalWeeks" placeholder="Introduce número de semanas (59,42825€/semana)" min="0" value="0" step="1">
       </div>
 
       <div class="input-group">
@@ -370,7 +370,7 @@
       </div>
 
       <div class="input-group">
-        <label for="excesosJornadaDays">D&#xed;as Excesos de jornada 2.025:</label>
+        <label for="excesosJornadaDays">D&#xed;as Exceso de jornada 2.026:</label>
         <input type="number" id="excesosJornadaDays" placeholder="Introduce n&#xfa;mero de d&#xed;as" min="0" value="0">
       </div>
 
@@ -416,31 +416,31 @@ const DAMM_PLUS = {
   'GRUPO2': 178.50
 };
 
-const NIGHT_HOUR_RATE = 3.89443685;
-const OVERTIME_HOUR_RATE = 19.629;
-const FESTIVITY_DAY_RATE = 297.838;
-const FESTIVITY_WITH_REST_RATE = 68.42937;
-const WEEKEND_HOUR_RATE = 12.7510;
+const NIGHT_HOUR_RATE = 4.0112699555; // increased by 3%
+const OVERTIME_HOUR_RATE = 19.92744; // +1.5%
+const FESTIVITY_DAY_RATE = 302.30657; // +1.5%
+const FESTIVITY_WITH_REST_RATE = 69.46076; // +1.5%
+const WEEKEND_HOUR_RATE = 12.94227; // +1.5%
 const UNION_FEE = 15.40;
 const AD_PERSONAM_PV_RATE = 67.044657;
-const COORDINATION_PLUS = 234.195213;
-const PLUS_FUNCIONAL_WEEK_RATE = 58.55;
-const ESTRUCTURAL_RATE = 69.846007;
-const URGENTE_RATE = 76.830628;
-const COYUNTURAL_RATE = 73.3383175;
-const D_FESTIVO_4TURNO_RATE = 102.007695;
+const COORDINATION_PLUS = 237.71;
+const PLUS_FUNCIONAL_WEEK_RATE = 59.42825;
+const ESTRUCTURAL_RATE = 70.89270; // +1.5%
+const URGENTE_RATE = 77.9830874; // updated urgente flexibility rate
+const COYUNTURAL_RATE = 74.43839; // +1.5%
+const D_FESTIVO_4TURNO_RATE = 103.53781; // +1.5%
 const JORNADA_ESPECIAL_RATES = {
-  'A1': 214.0172216,
-  'A2': 236.56605,
-  'B': 32.00011876
+  'A1': 217.22748, // +1.5%
+  'A2': 240.11409, // +1.5%
+  'B': 32.48012    // +1.5%
 };
-const FORMATION_HOUR_RATE = 10.66671;
-const DISABLED_AID_RATE = 249.630724;
-const BOCADILLO_RATE = 10.81644133;
-const AVISOS_RATE = 29.75833758;
-const PRE_AVISO_RATE = 33.20300714;
-const PLUS_ADELANTO_TURNO_RATE = 61.44458957;
-const PLUS_DESACTIVACION_FESTIVO_RATE = 11.06766905;
+const FORMATION_HOUR_RATE = 10.82671; // +1.5%
+const DISABLED_AID_RATE = 253.37518486;
+const BOCADILLO_RATE = 10.97669; // +1.5%
+const AVISOS_RATE = 30.20469; // +1.5%
+const PRE_AVISO_RATE = 33.70105; // +1.5%
+const PLUS_ADELANTO_TURNO_RATE = 62.3662693;
+const PLUS_DESACTIVACION_FESTIVO_RATE = 11.23468; // +1.5%
 const PRORRATEO_RATES = {
   'A': 7.4228,
   'B': 8.0449,
@@ -454,7 +454,7 @@ const SEGURIDAD_SOCIAL_MEI_RATE = 0.0013;
 const BEER_CASE_PRICE = 3.09;
 const SODA_CASE_PRICE = 4.14;
 const COMEDOR_RATE = 2.97;
-const EXCESOS_JORNADA_RATE = 165.360349;
+const EXCESOS_JORNADA_RATE = 167.84; // updated to 167.84€
 function validateAdPersonam2() {
   const input = document.getElementById('adPersonam2Rate');
   if (parseFloat(input.value) > 99.999) {
@@ -606,6 +606,7 @@ function calculateSalary() {
   const preAvisoDays = Math.min(5, parseInt(document.getElementById('preAvisoDays').value) || 0);
   const preAvisoPay = preAvisoDays * PRE_AVISO_RATE;
   const hasPlusAdelantoTurno = document.getElementById('hasPlusAdelantoTurno').value === 'yes';
+  // Plus Adelanto Turno + Última Hora (fixed rate)
   const plusAdelantoTurnoPay = hasPlusAdelantoTurno ? PLUS_ADELANTO_TURNO_RATE : 0;
   const desactivacionFestivoDays = Math.min(5, parseInt(document.getElementById('desactivacionFestivoDays').value) || 0);
   const desactivacionFestivoPay = desactivacionFestivoDays * PLUS_DESACTIVACION_FESTIVO_RATE;
@@ -632,6 +633,11 @@ function calculateSalary() {
   const unionApplied = unionSelected ? UNION_FEE : 0;
   const netSalary = grossSalary - irpfDeduction - unionApplied - seguridadSocialDeduction - desempleoDeduction - formacionProfesionalDeduction - seguridadSocialMEIDeduction - beverageCost - comedorCost - personalLoan;
   const breakdown = document.getElementById('breakdown');
+
+  // Summarise flexibilidades and related items
+  const totalFlexibilidades = estructuralPay + urgentePay + coyunturalPay;
+  const totalAvisosPreAvisoDesactivacion = avisosPay + preAvisoPay + desactivacionFestivoPay;
+
   breakdown.innerHTML = `
         <p><strong>Categoría:</strong> ${category}</p>
         <p><strong>Días del mes:</strong> ${daysInMonth}</p>
@@ -642,9 +648,14 @@ function calculateSalary() {
         <p><strong>Días festivos con descanso de dos dias:</strong> ${festivityWithRestDays} días (${festivityWithRestPay.toFixed(2)}€)</p>
         <p><strong>Horas trabajadas en sábados y domingos:</strong> ${weekendHours} horas (${weekendPay.toFixed(2)}€)</p>
         <p><strong>Horas Nocturnas:</strong> ${nightHours} horas (${nightShift.toFixed(2)}€)</p>
+        <p><strong>Horas Formaci&oacute;n:</strong> ${formationHours} horas (${formationPay.toFixed(2)}€)</p>
         <p><strong>COMP. DEC. PERSONAL:</strong> ${dammPlus.toFixed(2)}€</p>
         <p><strong>Plus Ad-Personam PV:</strong> ${adPersonamPV.toFixed(2)}€</p>
         <p><strong>Plus Ad-Personam 2:</strong> ${adPersonam2.toFixed(2)}€</p>
+
+        <!-- Horas extras (individual) -->
+        <p><strong>Horas Extras:</strong> ${overtimeHours} horas (${overtime.toFixed(2)}€)</p>
+
         <p><strong>Plus Funcional Coordinación:</strong> ${coordinationPlus.toFixed(2)}€</p>
         <p><strong>Plus Funcional Coordinación (por semana):</strong> ${plusFuncionalWeeks} semanas (${plusFuncionalPay.toFixed(2)}€)</p>
         <p><strong>Plus D-Festivo 4ºTurno:</strong> ${dFestivo4TurnoDays} días (${dFestivo4TurnoPay.toFixed(2)}€)</p>
@@ -656,7 +667,16 @@ function calculateSalary() {
         <p><strong>Plus Adicional Persona (fuera de convenio):</strong> ${plusAdicionalPersonalPay.toFixed(2)}€</p>
         <p><strong>Plus Adelanto Turno + Última Hora:</strong> ${plusAdelantoTurnoPay.toFixed(2)}€</p>
         <p><strong>Plus Desactivación festivo:</strong> ${desactivacionFestivoDays} días (${desactivacionFestivoPay.toFixed(2)}€)</p>
-        <p><strong>Excesos de jornada 2.025:</strong> ${excesosJornadaDays} días (${excesosJornadaPay.toFixed(2)}€)</p>
+        <p><strong>Exceso de jornada 2.026:</strong> ${excesosJornadaDays} días (${excesosJornadaPay.toFixed(2)}€)</p>
+
+        <!-- Individual flexibilidades y avisos (detallado) -->
+        <p><strong>Días Flexibilidad Estructural:</strong> ${estructuralDays} días (${estructuralPay.toFixed(2)}€)</p>
+        <p><strong>Días Flexibilidad Urgente:</strong> ${urgenteDays} días (${urgentePay.toFixed(2)}€)</p>
+        <p><strong>Días Flexibilidad Coyuntural:</strong> ${coyunturalDays} días (${coyunturalPay.toFixed(2)}€)</p>
+        <p><strong>Horas de Avisos:</strong> ${avisosHours} horas (${avisosPay.toFixed(2)}€)</p>
+        <p><strong>Días Pre-Aviso 4ºTurno:</strong> ${preAvisoDays} días (${preAvisoPay.toFixed(2)}€)</p>
+        <p><strong>Plus Desactivación festivo (individual):</strong> ${desactivacionFestivoDays} días (${desactivacionFestivoPay.toFixed(2)}€)</p>
+
         <p><strong>Salario Bruto:</strong> <span class="positive-amount">${grossSalary.toFixed(2)}€</span></p>
         <p><strong>Seguridad social (4.70%):</strong> <span class="negative-amount">-${seguridadSocialDeduction.toFixed(2)}€</span></p>
         <p><strong>Desempleo (1.55%):</strong> <span class="negative-amount">-${desempleoDeduction.toFixed(2)}€</span></p>
