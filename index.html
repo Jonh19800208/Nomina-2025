@@ -370,8 +370,13 @@
       </div>
 
       <div class="input-group">
-        <label for="excesosJornadaDays">D&#xed;as Exceso de jornada 2.026:</label>
+        <label for="excesosJornadaDays">(403) Compensaci&oacute;n c&oacute;mputo 4T 2.026:</label>
         <input type="number" id="excesosJornadaDays" placeholder="Introduce n&#xfa;mero de d&#xed;as" min="0" value="0">
+      </div>
+
+      <div class="input-group">
+        <label for="excesosJornadaDescansoDays">Compensaci&oacute;n c&oacute;mputo 4T con descanso:</label>
+        <input type="number" id="excesosJornadaDescansoDays" placeholder="Introduce n&#xfa;mero de d&#xed;as con descanso" min="0" value="0">
       </div>
 
       <div class="input-group">
@@ -451,10 +456,11 @@ const SEGURIDAD_SOCIAL_RATE = 0.047;
 const DESEMPLEO_RATE = 0.0155;
 const FORMACION_PROFESIONAL_RATE = 0.001;
 const SEGURIDAD_SOCIAL_MEI_RATE = 0.0013;
-const BEER_CASE_PRICE = 3.09;
-const SODA_CASE_PRICE = 4.14;
-const COMEDOR_RATE = 2.97;
+const BEER_CASE_PRICE = 3.090675;
+const SODA_CASE_PRICE = 4.1412;
+const COMEDOR_RATE = 3.52;
 const EXCESOS_JORNADA_RATE = 167.84; // updated to 167.84€
+const EXCESOS_JORNADA_DESCANSO_RATE = 86.493776; // new: con descanso (€/día)
 function validateAdPersonam2() {
   const input = document.getElementById('adPersonam2Rate');
   if (parseFloat(input.value) > 99.999) {
@@ -614,8 +620,10 @@ function calculateSalary() {
   const comedorCost = comedorDays * COMEDOR_RATE;
   const excesosJornadaDays = parseInt(document.getElementById('excesosJornadaDays').value) || 0;
   const excesosJornadaPay = excesosJornadaDays * EXCESOS_JORNADA_RATE;
+  const excesosJornadaDescansoDays = parseInt(document.getElementById('excesosJornadaDescansoDays').value) || 0;
+  const excesosJornadaDescansoPay = excesosJornadaDescansoDays * EXCESOS_JORNADA_DESCANSO_RATE;
   const personalLoan = parseFloat(document.getElementById('personalLoan').value) || 0;
-  const grossSalary = baseSalary + nightShift + overtime + formationPay + weekendPay + adPersonamPV + dammPlus + festivityPay + festivityWithRestPay + adPersonam2 + coordinationPlus + plusFuncionalPay + estructuralPay + urgentePay + coyunturalPay + dFestivo4TurnoPay + jornadaEspecialPay + disabledAidPay + bocadilloPay + extraPay + voluntaryPay + convenioPlus + avisosPay + preAvisoPay + plusAdelantoTurnoPay + desactivacionFestivoPay + excesosJornadaPay + plusAdicionalPersonalPay;
+  const grossSalary = baseSalary + nightShift + overtime + formationPay + weekendPay + adPersonamPV + dammPlus + festivityPay + festivityWithRestPay + adPersonam2 + coordinationPlus + plusFuncionalPay + estructuralPay + urgentePay + coyunturalPay + dFestivo4TurnoPay + jornadaEspecialPay + disabledAidPay + bocadilloPay + extraPay + voluntaryPay + convenioPlus + avisosPay + preAvisoPay + plusAdelantoTurnoPay + desactivacionFestivoPay + excesosJornadaPay + excesosJornadaDescansoPay + plusAdicionalPersonalPay;
   const remuneration = grossSalary - overtime;
   const prorrateo = PRORRATEO_RATES[category] * daysInMonth;
   const contingenciasComunes = remuneration + prorrateo;
@@ -667,7 +675,8 @@ function calculateSalary() {
         <p><strong>Plus Adicional Persona (fuera de convenio):</strong> ${plusAdicionalPersonalPay.toFixed(2)}€</p>
         <p><strong>Plus Adelanto Turno + Última Hora:</strong> ${plusAdelantoTurnoPay.toFixed(2)}€</p>
         <p><strong>Plus Desactivación festivo:</strong> ${desactivacionFestivoDays} días (${desactivacionFestivoPay.toFixed(2)}€)</p>
-        <p><strong>Exceso de jornada 2.026:</strong> ${excesosJornadaDays} días (${excesosJornadaPay.toFixed(2)}€)</p>
+        <p><strong>(403) Compensación cómputo 4T 2.026:</strong> ${excesosJornadaDays} días (${excesosJornadaPay.toFixed(2)}€)</p>
+        <p><strong>Compensación cómputo 4T con descanso:</strong> ${excesosJornadaDescansoDays} días (${excesosJornadaDescansoPay.toFixed(2)}€)</p>
 
         <!-- Individual flexibilidades y avisos (detallado) -->
         <p><strong>Días Flexibilidad Estructural:</strong> ${estructuralDays} días (${estructuralPay.toFixed(2)}€)</p>
